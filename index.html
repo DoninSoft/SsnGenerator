@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Danish, Icelandic & Swedish SSN Generator & Validator</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Free tool to generate and validate Danish CPR, Icelandic kennitala, and Swedish SSNs. Perfect for testing and educational use.">
+	<style>
+	table, th, td {
+		border: 1px solid black;
+		border-collapse: collapse;
+	}
+	th, td {
+		padding: 5px;
+	}
+	button {
+		width: 100px;
+	}
+	.notboldgrey{
+		font-weight:normal;
+		color:grey;
+	}
+	input.ssnField {
+		font-family: monospace;
+		width: 14ch;
+	}
+	</style>
+</head>
+
+<body>
+<h1>Nordic SSN Generator & Validator</h1>
+<h3>Danish SSN<span class="notboldgrey"> (DDMMYY-MRRG)</span></h3>
+<table>
+	<tr>
+		<td>
+			<label><font color="grey" size="3"> Date of birth (DDMMYY)</font></label>
+		</td>
+		<td>
+			<label><font color="grey" size="3">M - century (0 - 19XX, 5 - 20XX)</font></label>
+		</td>
+		<td>
+			<label><font color="grey" size="3">G - gender</font></label>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<input type="text" id="SixDigitsDk" maxlength="6" size="6"></input>
+		</td>
+		<td>
+			<select id="CenturyDk"><option>0</option><option>5</option></select>
+		<td>
+			<select id="GenderDk"><option>M</option><option>F</option></select>
+		</td>			
+	</tr>
+	<tr>
+		<td colspan="3">
+			<button onclick="generateSsnDk()" width = "30">Generate</button>&nbsp;&nbsp;
+			<input type="text" id="SSNDk" maxlength="11" size="11"  class="ssnField"></input>&nbsp;&nbsp; 
+			<button onclick="copySSN('SSNDk')">Copy</button>&nbsp;&nbsp;
+			<div style="float:right">
+				<button onclick="checkSsnDk()">Check</button>
+				<button  style="float:right" onclick="generateRandomDk()" width = "30">Random</button>&nbsp;&nbsp;
+			</div>
+		</td>
+	</tr>	
+</table>
+
+<br>
+<h3>Icelandic SSN<span class="notboldgrey"> (DDMMYY-RRCM)</span></h3>
+<table>
+	<tr>
+		<td>
+			<label><font color="grey" size="3"> Date of birth (DDMMYY)</font></label>
+		</td>
+		<td>
+			<label><font color="grey" size="3">M - century (9 - 19XX, 0 - 20XX)</font></label>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<input type="text" id="SixDigitsIs" maxlength="6" size="6"></input> 
+		</td>
+		<td>
+			<select id="CenturyIs"><option>9</option><option>0</option></select> 
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3">
+			<button onclick="generateSsnIs()">Generate</button>&nbsp;&nbsp;
+			<input type="text" id="SSNIs" maxlength="11" size="11"  class="ssnField"></input>&nbsp;&nbsp; 
+			<button onclick="copySSN('SSNIs')">Copy</button>&nbsp;&nbsp;
+			<div style="float:right">
+				<button onclick="checkSsnIs()">Check</button>
+				<button  style="float:right" onclick="generateRandomIs()" width = "30">Random</button>&nbsp;&nbsp;
+			</div>
+		</td>
+	</tr>	
+</table>
+
+<br>
+<h3>Sweedish SSN<span class="notboldgrey"> (YYYYMMDDNNGC)</span></h3>
+<table>
+	<tr>
+		<td>
+			<label><font color="grey" size="3"> Date of birth (YYYYMMDD)</font></label>
+		</td>
+		<td>
+			<label><font color="grey" size="3">G - gender</font></label>
+		</td>
+		<td>
+			<label><font color="grey" size="3">OID</font></label>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<input type="text" id="EightDigitsSw" maxlength="8" size="8"></input> 
+		</td>
+		<td>
+			<select id="GenderSw"><option>M</option><option>F</option></select>
+		</td>			
+		<td>
+			<select id="OID"><option>PNR</option></select> 
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3">
+			<button onclick="generateSsnSw()">Generate</button>&nbsp;&nbsp;
+			<input type="text" id="SsnSw" maxlength="12" size="12"  class="ssnField"></input>&nbsp;&nbsp; 
+			<button onclick="copySSN('SsnSw')">Copy</button>&nbsp;&nbsp;
+			<div style="float:right">
+				<button onclick="checkSsnSw()">Check</button>
+				<button  style="float:right" onclick="generateRandomSw()" width = "30">Random</button>&nbsp;&nbsp;
+			</div>
+		</td>
+	</tr>	
+</table>
+
+<footer style="margin-top: 30px; text-align: left; font-size: 0.9em; color: gray;">
+    &copy; <a href="mailto:yevhen.kozarovytskyi@gmail.com" style="color: gray; text-decoration: none;">yevhen.kozarovytskyi@gmail.com</a>
+</footer>
+	
+<script>
+
+function generateRandomDk() {
+	var year, month, day;
+	var century;
+	var sixDigits;
+	var gender;
+	var curDate = new Date();
+	
+	century = Math.floor(Math.random() * 2);
+	if (century == 1) {
+		century = 5; 
+		twoDigitsCentury = 20;
+	}
+	else { 
+		century = 0;
+		twoDigitsCentury = 19;
+	}
+	gender = Math.floor(Math.random() * 2);
+	
+	while (1) 
+	{
+		month = Math.floor(Math.random() * 12) + 1; 
+		switch (month)
+		{
+			case 1: case 3:  case 5:  case 7:  case 8: case 10: case 12:  
+				day = Math.floor(Math.random() * 31) + 1; 
+				break;
+			case 4: case 6:  case 9:  case 11:
+				day = Math.floor(Math.random() * 30) + 1; 
+				break;
+			default:
+				day = Math.floor(Math.random() * 28) + 1; 			
+		}
+		year = Math.floor(Math.random() * 100); 
+		sixDigits = '' + pad(day, '0', 2) + pad(month, '0', 2) + pad(year, '0', 2);
+		if (getDate(twoDigitsCentury, sixDigits) <= curDate)
+			break;
+	}
+	
+	document.getElementById("SixDigitsDk").value = sixDigits;
+	document.getElementById("CenturyDk").value = century;
+	
+	if (gender == 0) {
+		document.getElementById("GenderDk").value = 'F';
+	}
+	else {
+		document.getElementById("GenderDk").value = 'M';
+	}
+	generateSsnDk();
+}
+
+function generateRandomIs() {
+	var year, month, day;
+	var century, twoDigitsCentury;
+	var sixDigits;
+	var curDate = new Date();
+	
+	century = Math.floor(Math.random() * 2);
+	if (century == 1) {
+		century = 0; 
+		twoDigitsCentury = 20;
+	}
+	else { 
+		century = 9;
+		twoDigitsCentury = 19;
+	}
+	
+	while (1) 
+	{
+		month = Math.floor(Math.random() * 12) + 1; 
+		switch (month)
+		{
+			case 1: case 3:  case 5:  case 7:  case 8: case 10: case 12:  
+				day = Math.floor(Math.random() * 31) + 1; 
+				break;
+			case 4: case 6:  case 9:  case 11:
+				day = Math.floor(Math.random() * 30) + 1; 
+				break;
+			default:
+				day = Math.floor(Math.random() * 28) + 1; 			
+		}
+		year = Math.floor(Math.random() * 100); 
+		sixDigits = '' + pad(day, '0', 2) + pad(month, '0', 2) + pad(year, '0', 2);
+		if (getDate(twoDigitsCentury, sixDigits) <= curDate)
+			break;
+	}
+	
+	document.getElementById("SixDigitsIs").value = sixDigits;
+	document.getElementById("CenturyIs").value = century;
+	generateSsnIs();
+}
+
+function generateRandomSw() {
+	var month, day;
+	var eightDigits;
+	
+	var curDate = new Date();
+	var curYear = curDate.getFullYear();
+	
+	var year = 1900 + Math.floor(Math.random()*(curYear-1900));
+	
+	var gender = Math.floor(Math.random() * 2);
+
+	while (1) 
+	{
+		month = Math.floor(Math.random() * 12) + 1; 
+		switch (month)
+		{
+			case 1: case 3:  case 5:  case 7:  case 8: case 10: case 12:  
+				day = Math.floor(Math.random() * 31) + 1; 
+				break;
+			case 4: case 6:  case 9:  case 11:
+				day = Math.floor(Math.random() * 30) + 1; 
+				break;
+			default:
+				day = Math.floor(Math.random() * 28) + 1; 			
+		}
+		eightDigits = "" +  year + pad(month, '0', 2) +  pad(day, '0', 2);
+		if (getDateYYYYMMDD(eightDigits) <= curDate)
+			break;
+	}
+	
+	document.getElementById("EightDigitsSw").value = eightDigits;
+	if (gender == 0) {
+		document.getElementById("GenderSw").value = 'F';
+	}
+	else {
+		document.getElementById("GenderSw").value = 'M';
+	}
+	generateSsnSw();
+}
+
+function generateSsnDk() {
+	document.getElementById("SSNDk").value = "";
+	var century;
+	var M = parseInt(document.getElementById("CenturyDk").value);
+	var sixDigits = document.getElementById("SixDigitsDk").value;
+	if (sixDigits.length == 0) return;
+	if (M == '0') century = '19'; else century = '20';
+	if (!dateIsValid(century, sixDigits)) {
+		document.getElementById("SixDigitsDk").style.color  = "red";
+		return;
+	}
+	document.getElementById("SixDigitsDk").style.color  = "";
+	document.getElementById("SSNDk").style.color  = "";
+	var d = [];
+    	for (var i=0; i<2; i++){
+        	d.push(parseInt(sixDigits[i]));
+    	}
+	var m = [];
+    	for (var i=2; i<4; i++){
+        	m.push(parseInt(sixDigits[i]));
+    	}
+	var y = [];
+    	for (var i=4; i<6; i++){
+        	y.push(parseInt(sixDigits[i]));
+    	}
+	var g = document.getElementById("GenderDk").value;
+	var G;
+	if (g == 'M') G = 1; 
+	else  G = 0;
+	var r = [0, 0];
+	while (1) {
+		r[0] = Math.floor(Math.random() * 10); 
+		r[1] = Math.floor(Math.random() * 10); 
+		if ((4*d[0] + 3*d[1] + 2*m[0] + 7*m[1] + 6*y[0] + 5*y[1] + 4*M + 3*r[0] + 2*r[1] + G) % 11 == 0) {
+			break;
+		}
+	}
+	document.getElementById("SSNDk").value = "" + d[0] + d[1] + m[0] + m[1] + y[0] + y[1] + "-" + M + r[0] + r[1] + G;
+}
+
+function generateSsnIs() {
+	document.getElementById("SSNIs").value = "";
+	var century;
+	var M = parseInt(document.getElementById("CenturyIs").value);
+	var sixDigits = document.getElementById("SixDigitsIs").value;
+	if (M == '9') century = '19'; else century = '20';
+	if (!dateIsValid(century, sixDigits)) {
+		document.getElementById("SixDigitsIs").style.color  = "red";
+		return;
+	}
+	document.getElementById("SixDigitsIs").style.color  = "";
+	document.getElementById("SSNIs").style.color  = "";
+	var d = [];
+    	for (var i=0; i<2; i++){
+        	d.push(parseInt(sixDigits[i]));
+    	}
+	var m = [];
+    	for (var i=2; i<4; i++){
+        	m.push(parseInt(sixDigits[i]));
+    	}
+	var y = [];
+    	for (var i=4; i<6; i++){
+        	y.push(parseInt(sixDigits[i]));
+    	}
+	var r = [0, 0];
+	var c = 0;
+	while (1) {
+//		r[0] = Math.floor(Math.random() * 8) + 2;   // for unknown reason it mus be >= 2
+		r[0] = Math.floor(Math.random() * 10);   // for unknown reason it mus be >= 2
+		r[1] = Math.floor(Math.random() * 10); 
+		c = (3*d[0] + 2*d[1] + 7*m[0] + 6*m[1] + 5*y[0] + 4*y[1] + 3*r[0] + 2*r[1])%11;
+		if (c > 1) {
+			c = 11 - c;
+			break;
+		}
+	}
+	document.getElementById("SSNIs").value = "" + d[0] + d[1] + m[0] + m[1] + y[0] + y[1] + "-" + r[0] + r[1] + c + M;
+}
+
+function lastChar(val)
+{
+    var s = val.toString();
+    if (!s)  throw 'Empty string';
+    return Number(s[s.length-1]);
+}
+
+function generateSsnSw() {
+	document.getElementById("SsnSw").value = "";
+	var oid = document.getElementById("OID").value;
+	var eightDigits = document.getElementById("EightDigitsSw").value;
+	if (!dateIsValidYYYYMMDD(eightDigits)) {
+		document.getElementById("EightDigitsSw").style.color  = "red";
+		return;
+	}
+	document.getElementById("EightDigitsSw").style.color  = "";
+	document.getElementById("SsnSw").style.color  = "";
+
+	var n = [0, 0];
+	n[0] = Math.floor(Math.random()*10); 
+	n[1] = Math.floor(Math.random()*10); 
+
+	var G = Math.floor(Math.random()*5)*2;  // even for female
+	var g = document.getElementById("GenderSw").value;
+	if (g == 'M') G++                       // odd for male
+
+	var SSN = "" + eightDigits + n[0] + n[1] + G;
+
+    var sum = 0;
+    var d;
+    var multiplier = 2;
+    for (var i=2; i<SSN.length;i++)
+    {
+        if (/[0-9]/.test(SSN[i])) d = SSN[i]*multiplier; else d = SSN.charCodeAt(i)*multiplier;
+        if (d >= 10) {
+            d = Number(d.toString()[0]) + Number(d.toString()[1]);
+        }
+        multiplier = 3-multiplier;
+        sum += d;
+    }
+	var C = lastChar(10 - lastChar(sum));
+
+	switch (oid){
+		case 'PNR':
+			break;
+	}
+
+	document.getElementById("SsnSw").value = "" + SSN + C;
+}
+
+
+
+function checkSsnDk() {
+	var SSN = document.getElementById("SSNDk").value;
+	SSN = SSN.replace('-','');
+	if (SSN.length != 10) {
+		document.getElementById("SSNDk").style.color = 'red';
+		return;
+	}
+	var d = [];
+	var n;
+	for (var i=0; i<10; i++){
+		n = parseInt(SSN[i], 10);
+		if (isNaN(n)) {
+			document.getElementById("SSNDk").style.color = 'red';
+			return;
+		}
+		d.push(n);
+	}
+	if ((4*d[0] + 3*d[1] + 2*d[2] + 7*d[3] + 6*d[4] + 5*d[5] + 4*d[6] + 3*d[7] + 2*d[8] + d[9]) % 11 == 0) {
+		document.getElementById("SSNDk").style.color  = "green";
+	}
+	else {
+		document.getElementById("SSNDk").style.color  = "red";
+	}
+}
+
+function checkSsnIs() {
+	var SSN = document.getElementById("SSNIs").value;
+	SSN = SSN.replace('-','');
+	if (SSN.length != 10) {
+		document.getElementById("SSNIs").style.color = 'red';
+		return;
+	}
+	var d = [];
+	var n;
+	for (var i=0; i<10; i++){
+		n = parseInt(SSN[i], 10);
+		if (isNaN(n)) {
+			document.getElementById("SSNIs").style.color = 'red';
+			return;
+		}
+		d.push(n);
+	}
+	if ((3*d[0] + 2*d[1] + 7*d[2] + 6*d[3] + 5*d[4] + 4*d[5] + 3*d[6] + 2*d[7] + d[8]) % 11 == 0) {
+		document.getElementById("SSNIs").style.color  = "green";
+	}
+	else {
+		document.getElementById("SSNIs").style.color  = "red";
+	}
+}
+
+function checkSsnSw() {
+	var SSN = document.getElementById("SsnSw").value;
+	if (SSN.length != 12) {
+		document.getElementById("SsnSw").style.color = 'red';
+		return;
+	}
+	
+    var sum = 0;
+    var d;
+    var multiplier = 2;
+    for (var i=2; i<SSN.length-1;i++)
+    {
+        if (/[0-9]/.test(SSN[i])) d = SSN[i]*multiplier; else d = SSN.charCodeAt(i)*multiplier;
+        if (d >= 10) {
+            d = Number(d.toString()[0]) + Number(d.toString()[1]);
+        }
+        multiplier = 3-multiplier;
+        sum += d;
+    }
+
+	if (lastChar(10 - lastChar(sum)) == lastChar(SSN)) {
+		document.getElementById("SsnSw").style.color  = "green";
+	}
+	else {
+		document.getElementById("SsnSw").style.color  = "red";
+	}
+}
+
+function dateIsValid(century, sixDigits){
+	return !isNaN(Date.parse("" + century + sixDigits.substring(4) + '-' + sixDigits.substring(2,4) + '-' + sixDigits.substring(0,2)));
+}
+
+function dateIsValidYYYYMMDD(eightDigits){
+	return !isNaN(Date.parse(eightDigits.substring(0,4) + '-' + eightDigits.substring(4,6) + '-' + eightDigits.substring(6)));
+}
+
+function getDate(century, sixDigits){
+	return new Date("" + century + sixDigits.substring(4) + '-' + sixDigits.substring(2,4) + '-' + sixDigits.substring(0,2));
+}
+
+function getDateYYYYMMDD(eightDigits){
+	return new Date(eightDigits.substring(0,4) + '-' + eightDigits.substring(4,6) + '-' + eightDigits.substring(6));
+}
+
+function pad(value, padChar, width) {
+  padChar = padChar || '0';
+  value = value + '';
+  return value.length >= width ? value : new Array(width - value.length + 1).join(padChar) + value;
+}
+
+function copySSN(fieldId) {
+    const field = document.getElementById(fieldId);
+    if (!field || !field.value.trim()) return;
+    field.select();
+    field.setSelectionRange(0, 99999); // mobile compatibility
+    document.execCommand("copy");
+}
+
+</script>
+</body>
+</html>
