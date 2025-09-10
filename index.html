@@ -506,9 +506,31 @@ function pad(value, padChar, width) {
 function copySSN(fieldId) {
     const field = document.getElementById(fieldId);
     if (!field || !field.value.trim()) return;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value)
+            .then(() => {
+                highlightField(field);
+            })
+            .catch(err => {
+                console.error("Clipboard write failed, falling back:", err);
+                fallbackCopy(field);
+            });
+    } else {
+        fallbackCopy(field);
+    }
+}
+
+function fallbackCopy(field) {
     field.select();
     field.setSelectionRange(0, 99999); // mobile compatibility
     document.execCommand("copy");
+}
+
+function highlightField(field) {
+  const oldColor = field.style.backgroundColor;
+  field.style.backgroundColor = "#c2f0c2";  // light green
+  setTimeout(() => field.style.backgroundColor = oldColor, 500);
 }
 
 </script>
